@@ -91,7 +91,10 @@ function App() {
 		jsonData.sort((a, b) => a.ogrank - b.ogrank);
 
 		const data1 = jsonData.filter((obj) => obj.id === 313657);
-		const withDrank = jsonData.filter((obj) => obj.drank !== undefined);
+		const withDrank = jsonData.filter(
+			(obj) =>
+				obj.drank !== undefined || obj.drank !== " " || obj.drank !== "  "
+		);
 		const withoutDrank = jsonData.filter(
 			(obj) =>
 				obj.drank === undefined || obj.drank === " " || obj.drank === "  "
