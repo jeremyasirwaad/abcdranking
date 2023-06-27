@@ -88,7 +88,7 @@ function App() {
 	};
 
 	const pushlot = () => {
-		dataset.sort((a, b) => a.ogrank - b.ogrank);
+		jsonData.sort((a, b) => a.ogrank - b.ogrank);
 
 		const withDrank = jsonData.filter((obj) => obj.drank !== undefined);
 		const withoutDrank = jsonData.filter((obj) => obj.drank === undefined);
