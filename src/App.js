@@ -8,6 +8,16 @@ import * as XLSX from "xlsx";
 function App() {
 	const [jsonData, setJsonData] = useState(null);
 
+	function countAlphabets(string) {
+		let count = 0;
+		for (let i = 0; i < string.length; i++) {
+			if (/[a-zA-Z]/.test(string[i])) {
+				count++;
+			}
+		}
+		return count;
+	}
+
 	function incrementLastCharacter(str) {
 		var lastChar = str.charAt(str.length - 1);
 
@@ -90,10 +100,12 @@ function App() {
 	const pushlot = () => {
 		jsonData.sort((a, b) => a.ogrank - b.ogrank);
 
-		const data1 = jsonData.filter((obj) => obj.id === 313657);
+		console.log(jsonData);
+
+		// const data1 = jsonData.filter((obj) => obj.id === 313657);
 		const withDrank = jsonData.filter(
 			(obj) =>
-				obj.drank !== undefined || obj.drank !== " " || obj.drank !== "  "
+				obj.drank !== undefined && obj.drank !== " " && obj.drank !== "  "
 		);
 		const withoutDrank = jsonData.filter(
 			(obj) =>
@@ -104,24 +116,10 @@ function App() {
 			console.log(a.id);
 		});
 
-		console.log(data1);
+		// console.log(data1);
 
 		console.log(withDrank);
 		console.log(withoutDrank);
-
-		// const withDrank = dataset.reduce((result, entry) => {
-		// 	if ("drank" in entry) {
-		// 		result.push(entry);
-		// 	}
-		// 	return result;
-		// }, []);
-
-		// const withoutDrank = dataset.reduce((result, entry) => {
-		// 	if (!("drank" in entry)) {
-		// 		result.push(entry);
-		// 	}
-		// 	return result;
-		// }, []);
 
 		for (let index = 0; index < withoutDrank.length; index++) {
 			const elementwithout = withoutDrank[index];
@@ -132,6 +130,7 @@ function App() {
 					elementwithout.ogrank > element.ogrank &&
 					elementwithout.ogrank < element2.ogrank
 				) {
+					console.log("yes");
 					if (
 						!containsLettersAndNumbers(element.drank) &&
 						!containsLettersAndNumbers(element2.drank)
@@ -157,8 +156,16 @@ function App() {
 						containsLettersAndNumbers(element.drank) &&
 						containsLettersAndNumbers(element2.drank)
 					) {
-						elementwithout["drank"] = element2.drank + "a";
-						withDrank.splice(index + 1, 0, elementwithout);
+						if (
+							countAlphabets(element.drank) > 1 &&
+							countAlphabets(element2.drank) == 1
+						) {
+							elementwithout["drank"] = incrementLastCharacter(element.drank);
+							withDrank.splice(index + 1, 0, elementwithout);
+						} else {
+							elementwithout["drank"] = element2.drank + "a";
+							withDrank.splice(index + 1, 0, elementwithout);
+						}
 					}
 				}
 			}
