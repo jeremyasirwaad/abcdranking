@@ -102,19 +102,24 @@ function App() {
 
 		console.log(jsonData);
 
+		const validusers = jsonData.filter(
+			(obj) =>
+				obj.ogrank !== undefined && obj.ogrank !== " " && obj.ogrank !== "  "
+		);
+
 		// const data1 = jsonData.filter((obj) => obj.id === 313657);
-		const withDrank = jsonData.filter(
+		const withDrank = validusers.filter(
 			(obj) =>
 				obj.drank !== undefined && obj.drank !== " " && obj.drank !== "  "
 		);
-		const withoutDrank = jsonData.filter(
+		const withoutDrank = validusers.filter(
 			(obj) =>
 				obj.drank === undefined || obj.drank === " " || obj.drank === "  "
 		);
 
-		withoutDrank.map((a) => {
-			console.log(a.id);
-		});
+		// withoutDrank.map((a) => {
+		// 	console.log(a.id);
+		// });
 
 		// console.log(data1);
 
@@ -135,7 +140,7 @@ function App() {
 						!containsLettersAndNumbers(element.drank) &&
 						!containsLettersAndNumbers(element2.drank)
 					) {
-						elementwithout["drank"] = element2.drank + "a";
+						elementwithout["drank"] = element.drank + "a";
 						withDrank.splice(index + 1, 0, elementwithout);
 					}
 					if (
@@ -188,7 +193,7 @@ function App() {
 					<div>
 						<input
 							type="file"
-							accept=".xlsx, .xls"
+							accept=".xlsx, .xls,.csv"
 							onChange={handleFileUpload}
 						/>
 						{jsonData && (
