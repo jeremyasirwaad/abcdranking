@@ -7,6 +7,12 @@ import * as XLSX from "xlsx";
 
 function App() {
 	const [jsonData, setJsonData] = useState(null);
+	const [BC, setBC] = useState(false);
+	const [BCM, setBCM] = useState(false);
+	const [MBC, setMBC] = useState(false);
+	const [SC, setSC] = useState(false);
+	const [SCA, setSCA] = useState(false);
+	const [ST, setST] = useState(false);
 
 	function countAlphabets(string) {
 		let count = 0;
@@ -107,7 +113,11 @@ function App() {
 				obj.ogrank !== undefined && obj.ogrank !== " " && obj.ogrank !== "  "
 		);
 
-		// const data1 = jsonData.filter((obj) => obj.id === 313657);
+		const invalidusers = jsonData.filter(
+			(obj) =>
+				obj.ogrank === undefined && obj.ogrank === " " && obj.ogrank === "  "
+		);
+
 		const withDrank = validusers.filter(
 			(obj) =>
 				obj.drank !== undefined && obj.drank !== " " && obj.drank !== "  "
@@ -116,12 +126,6 @@ function App() {
 			(obj) =>
 				obj.drank === undefined || obj.drank === " " || obj.drank === "  "
 		);
-
-		// withoutDrank.map((a) => {
-		// 	console.log(a.id);
-		// });
-
-		// console.log(data1);
 
 		console.log(withDrank);
 		console.log(withoutDrank);
@@ -177,10 +181,168 @@ function App() {
 		}
 
 		console.log(withDrank.sort((a, b) => a.ogrank - b.ogrank));
+		withDrank.concat(invalidusers);
 		exportToExcel(
 			withDrank.sort((a, b) => a.ogrank - b.ogrank),
 			"Abcdranklist.xlsx"
 		);
+	};
+
+	const pushlotcommunity = () => {
+		jsonData.sort((a, b) => a.ogrank - b.ogrank);
+
+		console.log(jsonData);
+
+		var validusers = jsonData.filter(
+			(obj) =>
+				obj["rk.cr"] !== undefined &&
+				obj["rk.cr"] !== " " &&
+				obj["rk.cr"] !== "  "
+		);
+
+		var invalidusers = jsonData.filter(
+			(obj) =>
+				obj["rk.cr"] === undefined &&
+				obj["rk.cr"] === " " &&
+				obj["rk.cr"] === "  "
+		);
+
+		// const SCAdata = validusers.filter((obj) => obj["_p.co"] === "SCA");
+		// const STdata = validusers.filter((obj) => obj["_p.co"] === "ST");
+		// const nBCMdata = validusers.filter((obj) => obj["_p.co"] != "BCM");
+		// const nMBCdata = validusers.filter((obj) => obj["_p.co"] != "MBC");
+		// const nSCdata = validusers.filter((obj) => obj["_p.co"] != "SC");
+		// const nSCAdata = validusers.filter((obj) => obj["_p.co"] != "SCA");
+		// const nSTdata = validusers.filter((obj) => obj["_p.co"] != "ST");
+
+		if (BC) {
+			const BCdata = validusers.filter((obj) => obj["_p.co"] === "BC");
+			const nBCdata = validusers.filter((obj) => obj["_p.co"] != "BC");
+
+			var BCdatar = commonpusher(BCdata);
+			validusers = BCdatar.concat(nBCdata);
+		}
+		if (BCM) {
+			const BCMdata = validusers.filter((obj) => obj["_p.co"] === "BCM");
+			const nBCMdata = validusers.filter((obj) => obj["_p.co"] != "BCM");
+
+			var BCMdatar = commonpusher(BCMdata);
+			validusers = BCMdatar.concat(nBCMdata);
+		}
+		if (MBC) {
+			const MBCdata = validusers.filter((obj) => obj["_p.co"] === "MBC");
+			const nMBCdata = validusers.filter((obj) => obj["_p.co"] != "MBC");
+
+			var MBCdatar = commonpusher(MBCdata);
+			validusers = MBCdatar.concat(nMBCdata);
+		}
+		if (ST) {
+			const STdata = validusers.filter((obj) => obj["_p.co"] === "ST");
+			const nSTdata = validusers.filter((obj) => obj["_p.co"] != "ST");
+
+			var STdatar = commonpusher(STdata);
+			validusers = STdatar.concat(nSTdata);
+		}
+		if (SC) {
+			const SCdata = validusers.filter((obj) => obj["_p.co"] === "SC");
+			const nSCdata = validusers.filter((obj) => obj["_p.co"] != "SC");
+
+			var SCdatar = commonpusher(SCdata);
+			validusers = SCdatar.concat(nSCdata);
+		}
+		if (SCA) {
+			const SCAdata = validusers.filter((obj) => obj["_p.co"] === "SCA");
+			const nSCAdata = validusers.filter((obj) => obj["_p.co"] != "SCA");
+
+			var SCAdatar = commonpusher(SCAdata);
+			validusers = SCAdatar.concat(nSCAdata);
+		}
+
+		validusers.concat(invalidusers);
+		exportToExcel(
+			validusers.sort((a, b) => a.ogrank - b.ogrank),
+			"Community_fixed.xlsx"
+		);
+	};
+
+	const commonpusher = (validusers) => {
+		const withDrank = validusers.filter(
+			(obj) =>
+				obj["rkd.cr"] !== undefined &&
+				obj["rkd.cr"] !== " " &&
+				obj["rkd.cr"] !== "  "
+		);
+		const withoutDrank = validusers.filter(
+			(obj) =>
+				obj["rkd.cr"] === undefined ||
+				obj["rkd.cr"] === " " ||
+				obj["rkd.cr"] === "  "
+		);
+
+		console.log(withDrank);
+		console.log(withoutDrank);
+
+		for (let index = 0; index < withoutDrank.length; index++) {
+			const elementwithout = withoutDrank[index];
+			for (let index = 0; index < withDrank.length - 1; index++) {
+				const element = withDrank[index];
+				const element2 = withDrank[index + 1];
+				if (
+					elementwithout["rk.cr"] > element["rk.cr"] &&
+					elementwithout["rk.cr"] < element2["rk.cr"]
+				) {
+					console.log("yes");
+					if (
+						!containsLettersAndNumbers(element["rkd.cr"]) &&
+						!containsLettersAndNumbers(element2["rkd.cr"])
+					) {
+						elementwithout["rkd.cr"] = element["rkd.cr"] + "a";
+						withDrank.splice(index + 1, 0, elementwithout);
+					}
+					if (
+						!containsLettersAndNumbers(element["rkd.cr"]) &&
+						containsLettersAndNumbers(element2["rkd.cr"])
+					) {
+						elementwithout["rkd.cr"] = element2["rkd.cr"] + "a";
+						withDrank.splice(index + 1, 0, elementwithout);
+					}
+					if (
+						containsLettersAndNumbers(element["rkd.cr"]) &&
+						!containsLettersAndNumbers(element2["rkd.cr"])
+					) {
+						elementwithout["rkd.cr"] = incrementLastCharacter(
+							element["rkd.cr"]
+						);
+						withDrank.splice(index + 1, 0, elementwithout);
+					}
+					if (
+						containsLettersAndNumbers(element["rkd.cr"]) &&
+						containsLettersAndNumbers(element2["rkd.cr"])
+					) {
+						if (
+							countAlphabets(element["rkd.cr"]) > 1 &&
+							countAlphabets(element2["rkd.cr"]) == 1
+						) {
+							elementwithout["rkd.cr"] = incrementLastCharacter(
+								element["rkd.cr"]
+							);
+							withDrank.splice(index + 1, 0, elementwithout);
+						} else {
+							elementwithout["rkd.cr"] = element2["rkd.cr"] + "a";
+							withDrank.splice(index + 1, 0, elementwithout);
+						}
+					}
+				}
+			}
+		}
+
+		console.log(withDrank.sort((a, b) => a["rk.cr"] - b["rk.cr"]));
+		// withDrank.concat(invalidusers);
+		// exportToExcel(
+		// 	withDrank.sort((a, b) => a["rk.cr"] - b["rk.cr"]),
+		// 	"Abcdranklist.xlsx"
+		// );
+		return withDrank.sort((a, b) => a["rk.cr"] - b["rk.cr"]);
 	};
 
 	return (
@@ -190,7 +352,7 @@ function App() {
 				<Navbar />
 				<div className="pagedata">
 					<span className="pagetitle">ABCE Ranking System</span>
-					<div>
+					<div style={{ marginBottom: "40px" }}>
 						<input
 							type="file"
 							accept=".xlsx, .xls,.csv"
@@ -202,10 +364,101 @@ function App() {
 									pushlot();
 								}}
 							>
-								Convert & Donwload
+								Donwload General
 							</button>
 						)}
 					</div>
+					{jsonData && (
+						<div>
+							<span className="pagetitle" style={{ marginBottom: "40px" }}>
+								Select Community
+							</span>
+							<div
+								style={{
+									display: "flex",
+									marginBottom: "20px",
+									marginTop: "30px"
+								}}
+							>
+								<div>
+									{" "}
+									<input
+										onChange={(e) => {
+											setBC(!BC);
+										}}
+										type="checkbox"
+										className="checker"
+									/>{" "}
+									<span>BC</span>
+								</div>
+								<div>
+									{" "}
+									<input
+										onChange={(e) => {
+											setBCM(!BCM);
+										}}
+										type="checkbox"
+										className="checker"
+									/>{" "}
+									<span>BCM</span>
+								</div>
+								<div>
+									{" "}
+									<input
+										onChange={(e) => {
+											setMBC(!MBC);
+										}}
+										type="checkbox"
+										className="checker"
+									/>{" "}
+									<span>MBC</span>
+								</div>
+								<div>
+									{" "}
+									<input
+										onChange={(e) => {
+											setSC(!SC);
+										}}
+										type="checkbox"
+										className="checker"
+									/>{" "}
+									<span>SC</span>
+								</div>
+								<div>
+									{" "}
+									<input
+										onChange={(e) => {
+											setSCA(!SCA);
+										}}
+										type="checkbox"
+										className="checker"
+									/>{" "}
+									<span>SCA</span>
+								</div>
+								<div>
+									{" "}
+									<input
+										onChange={(e) => {
+											setST(!ST);
+										}}
+										type="checkbox"
+										className="checker"
+									/>{" "}
+									<span>ST</span>
+								</div>
+							</div>
+							<button
+								onClick={() => {
+									if (!(BC || BCM || MBC || ST || SC || SCA)) {
+									} else {
+										pushlotcommunity();
+									}
+								}}
+							>
+								Download Community
+							</button>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

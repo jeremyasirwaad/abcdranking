@@ -99,3 +99,7 @@ input[type=file]::file-selector-button {
   justify-content: flex-end;
   padding: 20px;
 }
+
+.checker{
+  margin-left: 15px;
+}
