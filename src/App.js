@@ -144,14 +144,14 @@ function App() {
 						!containsLettersAndNumbers(element.drank) &&
 						!containsLettersAndNumbers(element2.drank)
 					) {
-						elementwithout["drank"] = element.drank + "a";
+						elementwithout["drank"] = element.drank + "A";
 						withDrank.splice(index + 1, 0, elementwithout);
 					}
 					if (
 						!containsLettersAndNumbers(element.drank) &&
 						containsLettersAndNumbers(element2.drank)
 					) {
-						elementwithout["drank"] = element2.drank + "a";
+						elementwithout["drank"] = element2.drank + "A";
 						withDrank.splice(index + 1, 0, elementwithout);
 					}
 					if (
@@ -172,7 +172,7 @@ function App() {
 							elementwithout["drank"] = incrementLastCharacter(element.drank);
 							withDrank.splice(index + 1, 0, elementwithout);
 						} else {
-							elementwithout["drank"] = element2.drank + "a";
+							elementwithout["drank"] = element2.drank + "A";
 							withDrank.splice(index + 1, 0, elementwithout);
 						}
 					}
@@ -301,14 +301,14 @@ function App() {
 						!containsLettersAndNumbers(element["rkd.cr"]) &&
 						!containsLettersAndNumbers(element2["rkd.cr"])
 					) {
-						elementwithout["rkd.cr"] = element["rkd.cr"] + "a";
+						elementwithout["rkd.cr"] = element["rkd.cr"] + "A";
 						withDrank.splice(index + 1, 0, elementwithout);
 					}
 					if (
 						!containsLettersAndNumbers(element["rkd.cr"]) &&
 						containsLettersAndNumbers(element2["rkd.cr"])
 					) {
-						elementwithout["rkd.cr"] = element2["rkd.cr"] + "a";
+						elementwithout["rkd.cr"] = element2["rkd.cr"] + "A";
 						withDrank.splice(index + 1, 0, elementwithout);
 					}
 					if (
@@ -333,7 +333,7 @@ function App() {
 							);
 							withDrank.splice(index + 1, 0, elementwithout);
 						} else {
-							elementwithout["rkd.cr"] = element2["rkd.cr"] + "a";
+							elementwithout["rkd.cr"] = element2["rkd.cr"] + "A";
 							withDrank.splice(index + 1, 0, elementwithout);
 						}
 					}
