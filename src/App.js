@@ -270,13 +270,18 @@ function App() {
 			(obj) =>
 				obj["rkd.cr"] !== undefined &&
 				obj["rkd.cr"] !== " " &&
-				obj["rkd.cr"] !== "  "
+				obj["rkd.cr"] !== "  " &&
+				obj["rkd.cr"] !== "-1" && 
+				obj["rkd.cr"] !== -1 
 		);
 		const withoutDrank = validusers.filter(
 			(obj) =>
 				obj["rkd.cr"] === undefined ||
 				obj["rkd.cr"] === " " ||
-				obj["rkd.cr"] === "  "
+				obj["rkd.cr"] === "  " ||
+				obj["rkd.cr"] === "-1" || 
+				obj["rkd.cr"] === -1
+
 		);
 
 		console.log(withDrank);
