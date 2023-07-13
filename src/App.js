@@ -113,22 +113,29 @@ function App() {
 				obj.ogrank !== undefined && obj.ogrank !== " " && obj.ogrank !== "  "
 		);
 
+		console.log("valid users",validusers)
+
 		const invalidusers = jsonData.filter(
 			(obj) =>
-				obj.ogrank === undefined && obj.ogrank === " " && obj.ogrank === "  "
+				obj.ogrank === undefined || obj.ogrank === " " || obj.ogrank === "  "
 		);
+
+		console.log("invalid users",invalidusers)
 
 		const withDrank = validusers.filter(
 			(obj) =>
 				obj.drank !== undefined && obj.drank !== " " && obj.drank !== "  "
 		);
+
+		console.log("with DRANK",withDrank);
+
 		const withoutDrank = validusers.filter(
 			(obj) =>
 				obj.drank === undefined || obj.drank === " " || obj.drank === "  "
 		);
 
-		console.log(withDrank);
-		console.log(withoutDrank);
+		
+		console.log("without Drank",withoutDrank);
 
 		for (let index = 0; index < withoutDrank.length; index++) {
 			const elementwithout = withoutDrank[index];
@@ -181,9 +188,10 @@ function App() {
 		}
 
 		console.log(withDrank.sort((a, b) => a.ogrank - b.ogrank));
-		withDrank.concat(invalidusers);
+		const finallist = withDrank.concat(invalidusers);
+		console.log("final Sheet",finallist)
 		exportToExcel(
-			withDrank.sort((a, b) => a.ogrank - b.ogrank),
+			finallist.sort((a, b) => a.ogrank - b.ogrank),
 			"Abcdranklist.xlsx"
 		);
 	};
@@ -202,8 +210,8 @@ function App() {
 
 		var invalidusers = jsonData.filter(
 			(obj) =>
-				obj["rk.cr"] === undefined &&
-				obj["rk.cr"] === " " &&
+				obj["rk.cr"] === undefined ||
+				obj["rk.cr"] === " " ||
 				obj["rk.cr"] === "  "
 		);
 
@@ -217,50 +225,76 @@ function App() {
 
 		if (BC) {
 			const BCdata = validusers.filter((obj) => obj["_p.co"] === "BC");
+			console.log("Valid BC",BCdata)
 			const nBCdata = validusers.filter((obj) => obj["_p.co"] != "BC");
+			console.log("Non - Valid BC",nBCdata)
+
 
 			var BCdatar = commonpusher(BCdata);
 			validusers = BCdatar.concat(nBCdata);
+			console.log("Total BC",validusers)
 		}
 		if (BCM) {
 			const BCMdata = validusers.filter((obj) => obj["_p.co"] === "BCM");
+			console.log("Valid BCM",BCMdata)
+
 			const nBCMdata = validusers.filter((obj) => obj["_p.co"] != "BCM");
+			console.log("Non - Valid BCM",nBCMdata)
+
 
 			var BCMdatar = commonpusher(BCMdata);
+
 			validusers = BCMdatar.concat(nBCMdata);
+
 		}
 		if (MBC) {
 			const MBCdata = validusers.filter((obj) => obj["_p.co"] === "MBC");
+			console.log("valid MBC",MBCdata)
 			const nMBCdata = validusers.filter((obj) => obj["_p.co"] != "MBC");
+			console.log("non valid MBC",nMBCdata)
 
 			var MBCdatar = commonpusher(MBCdata);
 			validusers = MBCdatar.concat(nMBCdata);
+			console.log("Total MBC",validusers)
+
 		}
 		if (ST) {
 			const STdata = validusers.filter((obj) => obj["_p.co"] === "ST");
+			console.log("valid ST",STdata)
 			const nSTdata = validusers.filter((obj) => obj["_p.co"] != "ST");
+			console.log("Non valid ST",nSTdata)
 
 			var STdatar = commonpusher(STdata);
 			validusers = STdatar.concat(nSTdata);
+			console.log("Total ST",validusers)
 		}
 		if (SC) {
 			const SCdata = validusers.filter((obj) => obj["_p.co"] === "SC");
+			console.log("valid SC",SCdata)
 			const nSCdata = validusers.filter((obj) => obj["_p.co"] != "SC");
+			console.log("non valid SC",nSCdata)
 
 			var SCdatar = commonpusher(SCdata);
 			validusers = SCdatar.concat(nSCdata);
+			console.log("Total SC",validusers)
+
 		}
 		if (SCA) {
 			const SCAdata = validusers.filter((obj) => obj["_p.co"] === "SCA");
+			console.log("Valid SCA",SCAdata)
 			const nSCAdata = validusers.filter((obj) => obj["_p.co"] != "SCA");
+			console.log("NOn valid SCA",nSCAdata)
 
 			var SCAdatar = commonpusher(SCAdata);
 			validusers = SCAdatar.concat(nSCAdata);
+			console.log("Total SCA",validusers)
+
 		}
 
-		validusers.concat(invalidusers);
+		const finallist = validusers.concat(invalidusers);
+		console.log("Total Sheet",finallist)
 		exportToExcel(
-			validusers.sort((a, b) => a.ogrank - b.ogrank),
+			finallist.sort((a, b) => a.ogrank - b.ogrank),
 			"Community_fixed.xlsx"
 		);
 	};
@@ -274,6 +308,7 @@ function App() {
 				obj["rkd.cr"] !== "-1" && 
 				obj["rkd.cr"] !== -1 
 		);
+		console.log(withDrank)
 		const withoutDrank = validusers.filter(
 			(obj) =>
 				obj["rkd.cr"] === undefined ||
@@ -283,9 +318,7 @@ function App() {
 				obj["rkd.cr"] === -1
 
 		);
-
-		console.log(withDrank);
-		console.log(withoutDrank);
+		console.log(withoutDrank)
 
 		for (let index = 0; index < withoutDrank.length; index++) {
 			const elementwithout = withoutDrank[index];
