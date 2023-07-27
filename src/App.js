@@ -113,32 +113,33 @@ function App() {
 				obj.ogrank !== undefined && obj.ogrank !== " " && obj.ogrank !== "  "
 		);
 
-		console.log("valid users",validusers)
+		console.log("valid users", validusers);
 
 		const invalidusers = jsonData.filter(
 			(obj) =>
 				obj.ogrank === undefined || obj.ogrank === " " || obj.ogrank === "  "
 		);
 
-		console.log("invalid users",invalidusers)
+		console.log("invalid users", invalidusers);
 
 		const withDrank = validusers.filter(
 			(obj) =>
 				obj.drank !== undefined && obj.drank !== " " && obj.drank !== "  "
 		);
 
-		console.log("with DRANK",withDrank);
+		console.log("with DRANK", withDrank);
 
 		const withoutDrank = validusers.filter(
 			(obj) =>
 				obj.drank === undefined || obj.drank === " " || obj.drank === "  "
 		);
 
-		
-		console.log("without Drank",withoutDrank);
+		console.log("without Drank", withoutDrank);
 
 		for (let index = 0; index < withoutDrank.length; index++) {
 			const elementwithout = withoutDrank[index];
+			var filled = false;
+			// console.log("yes")
 			for (let index = 0; index < withDrank.length - 1; index++) {
 				const element = withDrank[index];
 				const element2 = withDrank[index + 1];
@@ -147,6 +148,7 @@ function App() {
 					elementwithout.ogrank < element2.ogrank
 				) {
 					console.log("yes");
+					filled = true;
 					if (
 						!containsLettersAndNumbers(element.drank) &&
 						!containsLettersAndNumbers(element2.drank)
@@ -185,11 +187,14 @@ function App() {
 					}
 				}
 			}
+			if (!filled) {
+				console.log("unable to fill", elementwithout);
+			}
 		}
 
 		console.log(withDrank.sort((a, b) => a.ogrank - b.ogrank));
 		const finallist = withDrank.concat(invalidusers);
-		console.log("final Sheet",finallist)
+		console.log("final Sheet", finallist);
 		exportToExcel(
 			finallist.sort((a, b) => a.ogrank - b.ogrank),
 			"Abcdranklist.xlsx"
@@ -215,6 +220,8 @@ function App() {
 				obj["rk.cr"] === "  "
 		);
 
+		console.log("Invalid non government", invalidusers);
+
 		// const SCAdata = validusers.filter((obj) => obj["_p.co"] === "SCA");
 		// const STdata = validusers.filter((obj) => obj["_p.co"] === "ST");
 		// const nBCMdata = validusers.filter((obj) => obj["_p.co"] != "BCM");
@@ -225,74 +232,83 @@ function App() {
 
 		if (BC) {
 			const BCdata = validusers.filter((obj) => obj["_p.co"] === "BC");
-			console.log("Valid BC",BCdata)
+			console.log(
+				"Valid BC filter",
+				BCdata.filter((data) => data["_aid"] == 246320)
+			);
 			const nBCdata = validusers.filter((obj) => obj["_p.co"] != "BC");
-			console.log("Non - Valid BC",nBCdata)
-
+			console.log("Non - Valid BC", nBCdata);
 
 			var BCdatar = commonpusher(BCdata);
 			validusers = BCdatar.concat(nBCdata);
-			console.log("Total BC",validusers)
+			console.log("Total BC", validusers);
 		}
 		if (BCM) {
 			const BCMdata = validusers.filter((obj) => obj["_p.co"] === "BCM");
-			console.log("Valid BCM",BCMdata)
+			console.log("Valid BCM", BCMdata);
 
 			const nBCMdata = validusers.filter((obj) => obj["_p.co"] != "BCM");
-			console.log("Non - Valid BCM",nBCMdata)
-
+			console.log("Non - Valid BCM", nBCMdata);
 
 			var BCMdatar = commonpusher(BCMdata);
 
 			validusers = BCMdatar.concat(nBCMdata);
-
 		}
 		if (MBC) {
 			const MBCdata = validusers.filter((obj) => obj["_p.co"] === "MBC");
-			console.log("valid MBC",MBCdata)
+			console.log("valid MBC", MBCdata);
 			const nMBCdata = validusers.filter((obj) => obj["_p.co"] != "MBC");
-			console.log("non valid MBC",nMBCdata)
+			console.log("non valid MBC", nMBCdata);
 
 			var MBCdatar = commonpusher(MBCdata);
 			validusers = MBCdatar.concat(nMBCdata);
-			console.log("Total MBC",validusers)
-
+			console.log("Total MBC", validusers);
 		}
 		if (ST) {
 			const STdata = validusers.filter((obj) => obj["_p.co"] === "ST");
-			console.log("valid ST",STdata)
+			console.log("valid ST", STdata);
 			const nSTdata = validusers.filter((obj) => obj["_p.co"] != "ST");
-			console.log("Non valid ST",nSTdata)
+			console.log("Non valid ST", nSTdata);
 
 			var STdatar = commonpusher(STdata);
 			validusers = STdatar.concat(nSTdata);
-			console.log("Total ST",validusers)
+			console.log("Total ST", validusers);
 		}
 		if (SC) {
 			const SCdata = validusers.filter((obj) => obj["_p.co"] === "SC");
-			console.log("valid SC",SCdata)
+			console.log("valid SC", SCdata);
 			const nSCdata = validusers.filter((obj) => obj["_p.co"] != "SC");
-			console.log("non valid SC",nSCdata)
+			console.log("non valid SC", nSCdata);
 
 			var SCdatar = commonpusher(SCdata);
 			validusers = SCdatar.concat(nSCdata);
-			console.log("Total SC",validusers)
-
+			console.log("Total SC", validusers);
 		}
 		if (SCA) {
 			const SCAdata = validusers.filter((obj) => obj["_p.co"] === "SCA");
-			console.log("Valid SCA",SCAdata)
+			console.log("Valid SCA", SCAdata);
 			const nSCAdata = validusers.filter((obj) => obj["_p.co"] != "SCA");
-			console.log("NOn valid SCA",nSCAdata)
+			console.log("NOn valid SCA", nSCAdata);
 
 			var SCAdatar = commonpusher(SCAdata);
 			validusers = SCAdatar.concat(nSCAdata);
-			console.log("Total SCA",validusers)
-
+			console.log("Total SCA", validusers);
 		}
 
 		const finallist = validusers.concat(invalidusers);
-		console.log("Total Sheet",finallist)
+		console.log(
+			"finallist yesono",
+			validusers.filter((list) => list._aid === 400020)
+		);
+		console.log(
+			"finallist yesono",
+			invalidusers.filter((list) => list._aid === 400020)
+		);
+		console.log(
+			"finallist yesono",
+			finallist.filter((list) => list._aid === 400020)
+		);
+		console.log("Total Sheet", finallist);
 		exportToExcel(
 			finallist.sort((a, b) => a.ogrank - b.ogrank),
 			"Community_fixed.xlsx"
@@ -305,23 +321,23 @@ function App() {
 				obj["rkd.cr"] !== undefined &&
 				obj["rkd.cr"] !== " " &&
 				obj["rkd.cr"] !== "  " &&
-				obj["rkd.cr"] !== "-1" && 
-				obj["rkd.cr"] !== -1 
+				obj["rkd.cr"] !== "-1" &&
+				obj["rkd.cr"] !== -1
 		);
-		console.log(withDrank)
+
 		const withoutDrank = validusers.filter(
 			(obj) =>
 				obj["rkd.cr"] === undefined ||
 				obj["rkd.cr"] === " " ||
 				obj["rkd.cr"] === "  " ||
-				obj["rkd.cr"] === "-1" || 
+				obj["rkd.cr"] === "-1" ||
 				obj["rkd.cr"] === -1
-
 		);
-		console.log(withoutDrank)
+		console.log(withoutDrank);
 
 		for (let index = 0; index < withoutDrank.length; index++) {
 			const elementwithout = withoutDrank[index];
+			var filled = false;
 			for (let index = 0; index < withDrank.length - 1; index++) {
 				const element = withDrank[index];
 				const element2 = withDrank[index + 1];
@@ -329,6 +345,7 @@ function App() {
 					elementwithout["rk.cr"] > element["rk.cr"] &&
 					elementwithout["rk.cr"] < element2["rk.cr"]
 				) {
+					filled = true;
 					console.log("yes");
 					if (
 						!containsLettersAndNumbers(element["rkd.cr"]) &&
@@ -371,6 +388,9 @@ function App() {
 						}
 					}
 				}
+			}
+			if (!filled) {
+				console.log("Unable to fill", elementwithout);
 			}
 		}
 
