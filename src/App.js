@@ -4,6 +4,9 @@ import { useState } from "react";
 import { Sidebar } from "./Sidebar";
 import { Navbar } from "./Navbar";
 import * as XLSX from "xlsx";
+import { Parser } from "json2csv";
+import CsvDownloadButton from "react-json-to-csv";
+import { JsonToExcel } from "react-json-to-excel";
 
 function App() {
 	const [jsonData, setJsonData] = useState(null);
@@ -13,6 +16,7 @@ function App() {
 	const [SC, setSC] = useState(false);
 	const [SCA, setSCA] = useState(false);
 	const [ST, setST] = useState(false);
+	const [mockdata, setMockdata] = useState([]);
 
 	function countAlphabets(string) {
 		let count = 0;
@@ -77,18 +81,33 @@ function App() {
 		XLSX.writeFile(workbook, filename);
 	}
 
-	const handleFileUpload = (event) => {
+	const exportToCsv = (jsonData, filename) => {
+		const fields = Object.keys(jsonData[0]);
+		const opts = { fields };
+		const parser = new Parser(opts);
+		const csv = parser.parse(jsonData);
+
+		const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+		const link = document.createElement("a");
+		link.href = URL.createObjectURL(blob);
+		link.setAttribute("download", filename);
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	};
+
+	const handleFileUpload = event => {
 		const file = event.target.files[0];
 		const reader = new FileReader();
 
-		reader.onload = (e) => {
+		reader.onload = e => {
 			const data = new Uint8Array(e.target.result);
 			const workbook = XLSX.read(data, { type: "array" });
 			const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 			const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
 			const headers = jsonData[0];
-			const convertedData = jsonData.slice(1).map((row) => {
+			const convertedData = jsonData.slice(1).map(row => {
 				const obj = {};
 				headers.forEach((header, index) => {
 					obj[header] = row[index];
@@ -109,29 +128,27 @@ function App() {
 		console.log(jsonData);
 
 		const validusers = jsonData.filter(
-			(obj) =>
+			obj =>
 				obj.ogrank !== undefined && obj.ogrank !== " " && obj.ogrank !== "  "
 		);
 
 		console.log("valid users", validusers);
 
 		const invalidusers = jsonData.filter(
-			(obj) =>
+			obj =>
 				obj.ogrank === undefined || obj.ogrank === " " || obj.ogrank === "  "
 		);
 
 		console.log("invalid users", invalidusers);
 
 		const withDrank = validusers.filter(
-			(obj) =>
-				obj.drank !== undefined && obj.drank !== " " && obj.drank !== "  "
+			obj => obj.drank !== undefined && obj.drank !== " " && obj.drank !== "  "
 		);
 
 		console.log("with DRANK", withDrank);
 
 		const withoutDrank = validusers.filter(
-			(obj) =>
-				obj.drank === undefined || obj.drank === " " || obj.drank === "  "
+			obj => obj.drank === undefined || obj.drank === " " || obj.drank === "  "
 		);
 
 		console.log("without Drank", withoutDrank);
@@ -199,6 +216,11 @@ function App() {
 			finallist.sort((a, b) => a.ogrank - b.ogrank),
 			"Abcdranklist.xlsx"
 		);
+		// exportToCsv(
+		// 	finallist.sort((a, b) => a.ogrank - b.ogrank),
+		// 	"Abcdranklist.csv"
+		// );
+		setMockdata(finallist.sort((a, b) => a.ogrank - b.ogrank));
 	};
 
 	const pushlotcommunity = () => {
@@ -207,14 +229,14 @@ function App() {
 		console.log(jsonData);
 
 		var validusers = jsonData.filter(
-			(obj) =>
+			obj =>
 				obj["rk.cr"] !== undefined &&
 				obj["rk.cr"] !== " " &&
 				obj["rk.cr"] !== "  "
 		);
 
 		var invalidusers = jsonData.filter(
-			(obj) =>
+			obj =>
 				obj["rk.cr"] === undefined ||
 				obj["rk.cr"] === " " ||
 				obj["rk.cr"] === "  "
@@ -231,12 +253,12 @@ function App() {
 		// const nSTdata = validusers.filter((obj) => obj["_p.co"] != "ST");
 
 		if (BC) {
-			const BCdata = validusers.filter((obj) => obj["_p.co"] === "BC");
+			const BCdata = validusers.filter(obj => obj["_p.co"] === "BC");
 			console.log(
 				"Valid BC filter",
-				BCdata.filter((data) => data["_aid"] == 246320)
+				BCdata.filter(data => data["_aid"] == 246320)
 			);
-			const nBCdata = validusers.filter((obj) => obj["_p.co"] != "BC");
+			const nBCdata = validusers.filter(obj => obj["_p.co"] != "BC");
 			console.log("Non - Valid BC", nBCdata);
 
 			var BCdatar = commonpusher(BCdata);
@@ -244,10 +266,10 @@ function App() {
 			console.log("Total BC", validusers);
 		}
 		if (BCM) {
-			const BCMdata = validusers.filter((obj) => obj["_p.co"] === "BCM");
+			const BCMdata = validusers.filter(obj => obj["_p.co"] === "BCM");
 			console.log("Valid BCM", BCMdata);
 
-			const nBCMdata = validusers.filter((obj) => obj["_p.co"] != "BCM");
+			const nBCMdata = validusers.filter(obj => obj["_p.co"] != "BCM");
 			console.log("Non - Valid BCM", nBCMdata);
 
 			var BCMdatar = commonpusher(BCMdata);
@@ -255,9 +277,9 @@ function App() {
 			validusers = BCMdatar.concat(nBCMdata);
 		}
 		if (MBC) {
-			const MBCdata = validusers.filter((obj) => obj["_p.co"] === "MBC");
+			const MBCdata = validusers.filter(obj => obj["_p.co"] === "MBC");
 			console.log("valid MBC", MBCdata);
-			const nMBCdata = validusers.filter((obj) => obj["_p.co"] != "MBC");
+			const nMBCdata = validusers.filter(obj => obj["_p.co"] != "MBC");
 			console.log("non valid MBC", nMBCdata);
 
 			var MBCdatar = commonpusher(MBCdata);
@@ -265,9 +287,9 @@ function App() {
 			console.log("Total MBC", validusers);
 		}
 		if (ST) {
-			const STdata = validusers.filter((obj) => obj["_p.co"] === "ST");
+			const STdata = validusers.filter(obj => obj["_p.co"] === "ST");
 			console.log("valid ST", STdata);
-			const nSTdata = validusers.filter((obj) => obj["_p.co"] != "ST");
+			const nSTdata = validusers.filter(obj => obj["_p.co"] != "ST");
 			console.log("Non valid ST", nSTdata);
 
 			var STdatar = commonpusher(STdata);
@@ -275,9 +297,9 @@ function App() {
 			console.log("Total ST", validusers);
 		}
 		if (SC) {
-			const SCdata = validusers.filter((obj) => obj["_p.co"] === "SC");
+			const SCdata = validusers.filter(obj => obj["_p.co"] === "SC");
 			console.log("valid SC", SCdata);
-			const nSCdata = validusers.filter((obj) => obj["_p.co"] != "SC");
+			const nSCdata = validusers.filter(obj => obj["_p.co"] != "SC");
 			console.log("non valid SC", nSCdata);
 
 			var SCdatar = commonpusher(SCdata);
@@ -285,9 +307,9 @@ function App() {
 			console.log("Total SC", validusers);
 		}
 		if (SCA) {
-			const SCAdata = validusers.filter((obj) => obj["_p.co"] === "SCA");
+			const SCAdata = validusers.filter(obj => obj["_p.co"] === "SCA");
 			console.log("Valid SCA", SCAdata);
-			const nSCAdata = validusers.filter((obj) => obj["_p.co"] != "SCA");
+			const nSCAdata = validusers.filter(obj => obj["_p.co"] != "SCA");
 			console.log("NOn valid SCA", nSCAdata);
 
 			var SCAdatar = commonpusher(SCAdata);
@@ -298,15 +320,15 @@ function App() {
 		const finallist = validusers.concat(invalidusers);
 		console.log(
 			"finallist yesono",
-			validusers.filter((list) => list._aid === 400020)
+			validusers.filter(list => list._aid === 400020)
 		);
 		console.log(
 			"finallist yesono",
-			invalidusers.filter((list) => list._aid === 400020)
+			invalidusers.filter(list => list._aid === 400020)
 		);
 		console.log(
 			"finallist yesono",
-			finallist.filter((list) => list._aid === 400020)
+			finallist.filter(list => list._aid === 400020)
 		);
 		console.log("Total Sheet", finallist);
 		exportToExcel(
@@ -315,9 +337,9 @@ function App() {
 		);
 	};
 
-	const commonpusher = (validusers) => {
+	const commonpusher = validusers => {
 		const withDrank = validusers.filter(
-			(obj) =>
+			obj =>
 				obj["rkd.cr"] !== undefined &&
 				obj["rkd.cr"] !== " " &&
 				obj["rkd.cr"] !== "  " &&
@@ -326,7 +348,7 @@ function App() {
 		);
 
 		const withoutDrank = validusers.filter(
-			(obj) =>
+			obj =>
 				obj["rkd.cr"] === undefined ||
 				obj["rkd.cr"] === " " ||
 				obj["rkd.cr"] === "  " ||
@@ -416,17 +438,23 @@ function App() {
 							accept=".xlsx, .xls,.csv"
 							onChange={handleFileUpload}
 						/>
-						{jsonData && (
+						{jsonData &&
 							<button
 								onClick={() => {
 									pushlot();
 								}}
 							>
 								Donwload General
-							</button>
-						)}
+							</button>}
+						{/* <CsvDownloadButton data={mockdata} /> */}
+						{/* <JsonToExcel
+							title="Download as Excel"
+							data={mockdata}
+							fileName="sample-file"
+							btnClassName="custom-classname"
+						/> */}
 					</div>
-					{jsonData && (
+					{jsonData &&
 						<div>
 							<span className="pagetitle" style={{ marginBottom: "40px" }}>
 								Select Community
@@ -439,9 +467,8 @@ function App() {
 								}}
 							>
 								<div>
-									{" "}
-									<input
-										onChange={(e) => {
+									{" "}<input
+										onChange={e => {
 											setBC(!BC);
 										}}
 										type="checkbox"
@@ -450,9 +477,8 @@ function App() {
 									<span>BC</span>
 								</div>
 								<div>
-									{" "}
-									<input
-										onChange={(e) => {
+									{" "}<input
+										onChange={e => {
 											setBCM(!BCM);
 										}}
 										type="checkbox"
@@ -461,9 +487,8 @@ function App() {
 									<span>BCM</span>
 								</div>
 								<div>
-									{" "}
-									<input
-										onChange={(e) => {
+									{" "}<input
+										onChange={e => {
 											setMBC(!MBC);
 										}}
 										type="checkbox"
@@ -472,9 +497,8 @@ function App() {
 									<span>MBC</span>
 								</div>
 								<div>
-									{" "}
-									<input
-										onChange={(e) => {
+									{" "}<input
+										onChange={e => {
 											setSC(!SC);
 										}}
 										type="checkbox"
@@ -483,9 +507,8 @@ function App() {
 									<span>SC</span>
 								</div>
 								<div>
-									{" "}
-									<input
-										onChange={(e) => {
+									{" "}<input
+										onChange={e => {
 											setSCA(!SCA);
 										}}
 										type="checkbox"
@@ -494,9 +517,8 @@ function App() {
 									<span>SCA</span>
 								</div>
 								<div>
-									{" "}
-									<input
-										onChange={(e) => {
+									{" "}<input
+										onChange={e => {
 											setST(!ST);
 										}}
 										type="checkbox"
@@ -515,8 +537,7 @@ function App() {
 							>
 								Download Community
 							</button>
-						</div>
-					)}
+						</div>}
 				</div>
 			</div>
 		</div>
